@@ -1,0 +1,34 @@
+{
+  "name": "Kape Ko — SONG Level 2",
+  "image": "mcr.microsoft.com/devcontainers/java:17-bullseye",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-java-pack",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "humao.rest-client"
+      ],
+      "settings": {
+        "java.jdt.ls.java.home": "/usr/local/sdkman/candidates/java/current",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
+    }
+  },
+  "forwardPorts": [8080, 5173],
+  "portsAttributes": {
+    "8080": { "label": "Spring Boot API", "onAutoForward": "notify" },
+    "5173": { "label": "React Storefront", "onAutoForward": "openBrowser" }
+  },
+  "postCreateCommand": "cd frontend && npm install",
+  "remoteEnv": {
+    "LLM_API_KEY": "${localEnv:LLM_API_KEY}"
+  }
+}
