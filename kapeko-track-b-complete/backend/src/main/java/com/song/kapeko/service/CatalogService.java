@@ -3,6 +3,7 @@ package com.song.kapeko.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.song.kapeko.model.Product;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -22,8 +23,8 @@ import java.util.List;
 public class CatalogService {
 
     private final LlmService llmService;
+    private final String catalogPath;
     private final ObjectMapper mapper = new ObjectMapper();
-    private static final String CATALOG_PATH = "data/catalog.json";
 
     private static final String SYSTEM_PROMPT = """
             You are a product catalog specialist for a commerce platform.
@@ -72,8 +73,9 @@ public class CatalogService {
             Respond with valid JSON only. No markdown fences. No explanation.
             """;
 
-    public CatalogService(LlmService llmService) {
+    public CatalogService(LlmService llmService, Environment environment) {
         this.llmService = llmService;
+        this.catalogPath = environment.getProperty("catalog.output-path", "data/catalog.json");
     }
 
     /** Lab 3: Generate catalog via LLM and save to disk */
@@ -81,35 +83,67 @@ public class CatalogService {
         System.out.println("🤖 CatalogService: calling LLM API...");
         String rawJson = llmService.complete(SYSTEM_PROMPT, USER_PROMPT);
         rawJson = rawJson.replaceAll("```json\\s*", "").replaceAll("```\\s*", "").trim();
-        List<Product> products = parseProducts(rawJson);
+        List<Product> products;
+        try {
+            products = parseProducts(rawJson);
+        } catch (IOException firstError) {
+            System.out.println("⚠️ Invalid catalog JSON; retrying with strict JSON instruction...");
+            String retryPrompt = USER_PROMPT + "\nReturn one valid JSON object only. Do not add trailing commas or commentary.";
+            try {
+                rawJson = llmService.complete(SYSTEM_PROMPT, retryPrompt)
+                        .replaceAll("```json\\s*", "").replaceAll("```\\s*", "").trim();
+                products = parseProducts(rawJson);
+            } catch (IOException secondError) {
+                File fallback = new File(catalogPath);
+                if (!fallback.exists()) throw secondError;
+                System.out.println("⚠️ LLM returned invalid JSON twice; using local catalog fallback.");
+                products = readCatalogFile(fallback);
+            }
+        }
         saveCatalog(products);
-        System.out.println("✅ Generated " + products.size() + " products → saved to " + CATALOG_PATH);
+        System.out.println("✅ Generated " + products.size() + " products → saved to " + catalogPath);
         return products;
     }
 
     /** Return existing catalog from disk, auto-generate if missing */
     public List<Product> getCatalog() throws Exception {
-        File file = new File(CATALOG_PATH);
+        File file = new File(catalogPath);
         if (!file.exists()) return generateCatalog();
+        try {
+            return readCatalogFile(file);
+        } catch (IOException invalidCatalog) {
+            System.out.println("⚠️ Invalid catalog file; regenerating: " + file.getPath());
+            if (!file.delete()) {
+                System.out.println("⚠️ Could not delete invalid catalog file; it will be overwritten.");
+            }
+            return generateCatalog();
+        }
+    }
+
+    private List<Product> readCatalogFile(File file) throws IOException {
         JsonNode root = mapper.readTree(file);
         List<Product> products = new ArrayList<>();
         for (JsonNode node : root.path("products")) {
             products.add(mapper.treeToValue(node, Product.class));
         }
+        if (products.isEmpty()) throw new IOException("catalog contains no products");
         return products;
     }
 
     private List<Product> parseProducts(String json) throws IOException {
         JsonNode root = mapper.readTree(json);
         JsonNode arr = root.has("products") ? root.path("products") : root;
+        if (!arr.isArray() || arr.isEmpty()) throw new IOException("LLM returned no products");
         List<Product> products = new ArrayList<>();
         for (JsonNode node : arr) products.add(mapper.treeToValue(node, Product.class));
         return products;
     }
 
     private void saveCatalog(List<Product> products) throws IOException {
-        new File("data").mkdirs();
+        File catalogFile = new File(catalogPath);
+        File parent = catalogFile.getParentFile();
+        if (parent != null) parent.mkdirs();
         mapper.writerWithDefaultPrettyPrinter()
-              .writeValue(new File(CATALOG_PATH), mapper.createObjectNode().putPOJO("products", products));
+              .writeValue(catalogFile, mapper.createObjectNode().putPOJO("products", products));
     }
 }

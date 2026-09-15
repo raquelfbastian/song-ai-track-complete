@@ -6,11 +6,12 @@ import { CommonModule }       from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { ProductService }     from '../../services/product.service';
 import { Product }            from '../../models/product.model';
+import { RecommendationsComponent } from '../../components/recommendations/recommendations.component';
 
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, RecommendationsComponent],
   template: `
     <nav class="nav">
       <a routerLink="/" class="back-btn">← Back</a>
@@ -78,6 +79,8 @@ import { Product }            from '../../models/product.model';
       <p *ngIf="product.pairing_suggestion" class="pairing">
         ☕ {{ product.pairing_suggestion }}
       </p>
+
+      <app-recommendations [productId]="product.id" />
     </div>
   `,
   styles: [`

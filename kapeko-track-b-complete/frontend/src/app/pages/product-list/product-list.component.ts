@@ -26,6 +26,12 @@ import { Product }                 from '../../models/product.model';
       <div class="nav-links">
         <a routerLink="/lab3">Lab 3</a>
         <a routerLink="/lab4">Lab 4</a>
+        <a routerLink="/lab5">Lab 5</a>
+        <a routerLink="/lab6">Lab 6</a>
+        <a routerLink="/lab7">Lab 7</a>
+        <a routerLink="/lab8">Lab 8</a>
+        <a routerLink="/lab9">Lab 9</a>
+        <a routerLink="/lab10">Lab 10</a>
       </div>
     </nav>
 
@@ -142,7 +148,6 @@ export class ProductListComponent implements OnInit {
   filteredProducts: Product[] = [];
   loading = true;
   error: string | null = null;
-  filter = 'All';
   roasts = ['All', 'Light', 'Medium', 'Dark'];
 
   constructor(private productService: ProductService) {}

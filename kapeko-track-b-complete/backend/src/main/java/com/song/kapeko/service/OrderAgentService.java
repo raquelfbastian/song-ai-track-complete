@@ -89,7 +89,9 @@ public class OrderAgentService {
     /** Detect if the LLM response is a tool call */
     private boolean isToolCall(String response) {
         String trimmed = response.trim();
-        return trimmed.startsWith("{") && trimmed.contains("\"tool\"");
+        return trimmed.contains("\"tool\"")
+                && trimmed.indexOf('{') >= 0
+                && trimmed.lastIndexOf('}') > trimmed.indexOf('{');
     }
 
     /** Execute the tool the LLM decided to call */
