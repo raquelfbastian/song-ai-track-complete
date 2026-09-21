@@ -27,12 +27,14 @@ async function complete(systemPrompt, userPrompt) {
 
 // ── Azure OpenAI ───────────────────────────────────────────────────────────
 async function callAzureOpenAI(system, user) {
-  const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
+  const endpoint = requireAzureEndpoint();
   const apiKey   = process.env.LLM_API_KEY;
+  const isV1Endpoint = endpoint.endsWith('/openai/v1');
 
   const response = await axios.post(
-    `${endpoint}/chat/completions?api-version=2024-02-01`,
+    `${endpoint}/chat/completions${isV1Endpoint ? '' : '?api-version=2024-02-01'}`,
     {
+      ...(isV1Endpoint ? { model: process.env.LLM_MODEL || 'gpt-4o' } : {}),
       messages: [
         { role: 'system', content: system },
         { role: 'user',   content: user   },
@@ -47,6 +49,21 @@ async function callAzureOpenAI(system, user) {
     }
   );
   return response.data.choices[0].message.content;
+}
+
+function requireAzureEndpoint() {
+  const endpoint = (process.env.AZURE_OPENAI_ENDPOINT || '').replace(/\/+$/, '');
+  if (!endpoint) {
+    throw new Error(
+      'AZURE_OPENAI_ENDPOINT is missing. Add it to kapeko-track-a-complete/.env.'
+    );
+  }
+  try {
+    new URL(endpoint);
+  } catch {
+    throw new Error('AZURE_OPENAI_ENDPOINT must be a complete URL starting with https://.');
+  }
+  return endpoint;
 }
 
 // ── OpenAI ─────────────────────────────────────────────────────────────────
@@ -142,9 +159,11 @@ async function embed(text) {
     return embedFallback(text); // No embedding API — hash fallback
   }
 
+  const azureEndpoint = provider === 'azure' ? requireAzureEndpoint() : '';
+  const isAzureV1Endpoint = azureEndpoint.endsWith('/openai/v1');
   const url = provider === 'openai'
     ? 'https://api.openai.com/v1/embeddings'
-    : `${process.env.AZURE_OPENAI_EMBEDDING_ENDPOINT || process.env.AZURE_OPENAI_ENDPOINT}/embeddings?api-version=2024-02-01`;
+    : `${process.env.AZURE_OPENAI_EMBEDDING_ENDPOINT || azureEndpoint}/embeddings${isAzureV1Endpoint ? '' : '?api-version=2024-02-01'}`;
 
   const headers = provider === 'azure'
     ? { 'Content-Type': 'application/json', 'api-key': process.env.LLM_API_KEY }
@@ -152,7 +171,12 @@ async function embed(text) {
 
   const body = provider === 'openai'
     ? { model: 'text-embedding-ada-002', input: text }
-    : { input: text };
+    : {
+        ...(isAzureV1Endpoint
+          ? { model: process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT || 'text-embedding-3-small' }
+          : {}),
+        input: text,
+      };
 
   const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
   const data = await res.json();

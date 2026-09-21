@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // Proxy all /api calls to Spring Boot — no CORS issues
+      // Proxy all /api calls to the Track A Node.js backend — no CORS issues
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,

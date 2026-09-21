@@ -4,7 +4,12 @@
 // Start: node src/index.js  (or: npm run dev with nodemon)
 // Runs on: http://localhost:8080
 
-require('dotenv').config();
+const path = require('path');
+const dotenv = require('dotenv');
+
+// Load the project-level .env when the backend is started from this folder.
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config();
 const express    = require('express');
 const cors       = require('cors');
 const kapeKoRoutes = require('./routes/kapeKo');
