@@ -81,7 +81,23 @@ public class CatalogService {
         System.out.println("🤖 CatalogService: calling LLM API...");
         String rawJson = llmService.complete(SYSTEM_PROMPT, USER_PROMPT);
         rawJson = rawJson.replaceAll("```json\\s*", "").replaceAll("```\\s*", "").trim();
-        List<Product> products = parseProducts(rawJson);
+        List<Product> products;
+        try {
+            products = parseProducts(rawJson);
+        } catch (IOException firstError) {
+            System.out.println("⚠️ Invalid catalog JSON; retrying with strict JSON instruction...");
+            String retryPrompt = USER_PROMPT + "\nReturn one valid JSON object only. Do not add trailing commas, thousands separators in numbers, or commentary.";
+            try {
+                rawJson = llmService.complete(SYSTEM_PROMPT, retryPrompt)
+                        .replaceAll("```json\\s*", "").replaceAll("```\\s*", "").trim();
+                products = parseProducts(rawJson);
+            } catch (IOException secondError) {
+                File fallback = new File(CATALOG_PATH);
+                if (!fallback.exists()) throw secondError;
+                System.out.println("⚠️ LLM returned invalid JSON twice; using local catalog fallback.");
+                products = readCatalogFile(fallback);
+            }
+        }
         saveCatalog(products);
         System.out.println("✅ Generated " + products.size() + " products → saved to " + CATALOG_PATH);
         return products;
@@ -91,11 +107,16 @@ public class CatalogService {
     public List<Product> getCatalog() throws Exception {
         File file = new File(CATALOG_PATH);
         if (!file.exists()) return generateCatalog();
+        return readCatalogFile(file);
+    }
+
+    private List<Product> readCatalogFile(File file) throws IOException {
         JsonNode root = mapper.readTree(file);
         List<Product> products = new ArrayList<>();
         for (JsonNode node : root.path("products")) {
             products.add(mapper.treeToValue(node, Product.class));
         }
+        if (products.isEmpty()) throw new IOException("catalog contains no products");
         return products;
     }
 

@@ -11,7 +11,7 @@
 cd backend
 export LLM_PROVIDER=azure
 export LLM_API_KEY=your-api-key
-export LLM_AZURE_ENDPOINT=https://your-resource.openai.azure.com/openai/deployments/your-deployment
+export AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/openai/deployments/your-deployment
 mvn spring-boot:run
 ```
 

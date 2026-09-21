@@ -70,11 +70,14 @@ public class LlmService {
     private String completeAzure(String system, String user) {
         ObjectNode body = mapper.createObjectNode();
         body.put("temperature", 0.7);
+        if (isAzureV1Endpoint()) {
+            body.put("model", env.getProperty("llm.model", "gpt-4o"));
+        }
         ArrayNode messages = body.putArray("messages");
         messages.addObject().put("role", "system").put("content", system);
         messages.addObject().put("role", "user").put("content", user);
         String response = azureClient().post()
-                .uri("/chat/completions?api-version=2024-02-01")
+                .uri(isAzureV1Endpoint() ? "/chat/completions" : "/chat/completions?api-version=2024-02-01")
                 .bodyValue(body.toString()).retrieve().bodyToMono(String.class).block();
         return extractContent(response);
     }
@@ -82,13 +85,20 @@ public class LlmService {
     private String completeAzureWithHistory(String system, List<Map<String, String>> history) {
         ObjectNode body = mapper.createObjectNode();
         body.put("temperature", 0.7);
+        if (isAzureV1Endpoint()) {
+            body.put("model", env.getProperty("llm.model", "gpt-4o"));
+        }
         ArrayNode messages = body.putArray("messages");
         messages.addObject().put("role", "system").put("content", system);
         history.forEach(m -> messages.addObject().put("role", m.get("role")).put("content", m.get("content")));
         String response = azureClient().post()
-                .uri("/chat/completions?api-version=2024-02-01")
+                .uri(isAzureV1Endpoint() ? "/chat/completions" : "/chat/completions?api-version=2024-02-01")
                 .bodyValue(body.toString()).retrieve().bodyToMono(String.class).block();
         return extractContent(response);
+    }
+
+    private boolean isAzureV1Endpoint() {
+        return env.getProperty("llm.azure.endpoint", "").matches(".*?/openai/v1/?$");
     }
 
     private float[] embedAzure(String text) {
@@ -98,11 +108,14 @@ public class LlmService {
                         env.getProperty("llm.model", "gpt-4o"), "text-embedding-ada-002"));
         ObjectNode body = mapper.createObjectNode();
         body.put("input", text);
+        if (isAzureV1Endpoint()) {
+            body.put("model", env.getProperty("llm.azure.embedding-deployment", "text-embedding-3-small"));
+        }
         String response = WebClient.builder().baseUrl(embeddingEndpoint)
                 .defaultHeader("api-key", env.getProperty("llm.api-key"))
                 .defaultHeader("Content-Type", "application/json")
                 .build().post()
-                .uri("/embeddings?api-version=2024-02-01")
+            .uri(isAzureV1Endpoint() ? "/embeddings" : "/embeddings?api-version=2024-02-01")
                 .bodyValue(body.toString()).retrieve().bodyToMono(String.class).block();
         return parseEmbedding(response);
     }
