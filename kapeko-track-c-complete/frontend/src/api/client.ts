@@ -49,3 +49,37 @@ export async function getProduct(id: string): Promise<Product> {
   if (!res.ok) throw new Error(await res.text())
   return res.json()
 }
+
+export async function searchCatalog(query: string): Promise<{ query: string; answer: string; sources: string[]; products: Product[] }> {
+  const res = await fetch(`${BASE}/search?q=${encodeURIComponent(query)}`)
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}
+
+export async function reindexCatalog(): Promise<{ message: string }> {
+  const res = await fetch(`${BASE}/rag/index`, { method: 'POST' })
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}
+
+export async function getRecommendations(id: string): Promise<Product[]> {
+  const res = await fetch(`${BASE}/products/${id}/recommendations?topN=3`)
+  if (!res.ok) throw new Error(await res.text())
+  const data = await res.json()
+  return data.recommendations || []
+}
+
+export async function processOrder(message: string, customerId = 'cust-demo'): Promise<unknown> {
+  const res = await fetch(`${BASE}/agent/order`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerId, message }),
+  })
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}
+
+export async function runCatalogPipeline(): Promise<unknown> {
+  const res = await fetch(`${BASE}/agent/catalog/pipeline`, { method: 'POST' })
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}

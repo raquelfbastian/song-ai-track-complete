@@ -9,6 +9,12 @@ import { getProducts } from './api/client'
 import ProductDetail from './pages/ProductDetail'
 import Lab3 from './pages/Lab3'
 import Lab4 from './pages/Lab4'
+import Lab5 from './pages/Lab5'
+import Lab6 from './pages/Lab6'
+import Lab7 from './pages/Lab7'
+import Lab8 from './pages/Lab8'
+import Lab9 from './pages/Lab9'
+import Lab10 from './pages/Lab10'
 import SearchBar from './components/SearchBar'
 import ChatWidget from './components/ChatWidget'
 
@@ -52,9 +58,10 @@ function ProductListing() {
             </button>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 20 }}>
-          <Link to="/lab3" style={{ color: '#78716C', fontSize: 13, textDecoration: 'none' }}>Lab 3</Link>
-          <Link to="/lab4" style={{ color: '#78716C', fontSize: 13, textDecoration: 'none' }}>Lab 4</Link>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          {[3, 4, 5, 6, 7, 8, 9, 10].map(lab => (
+            <Link key={lab} to={`/lab${lab}`} style={{ color: '#78716C', fontSize: 12, textDecoration: 'none' }}>Lab {lab}</Link>
+          ))}
         </div>
       </nav>
 
@@ -147,6 +154,12 @@ export default function App() {
       <Route path="/products/:id" element={<ProductDetail />} />
       <Route path="/lab3" element={<Lab3 />} />
       <Route path="/lab4" element={<Lab4 />} />
+      <Route path="/lab5" element={<Lab5 />} />
+      <Route path="/lab6" element={<Lab6 />} />
+      <Route path="/lab7" element={<Lab7 />} />
+      <Route path="/lab8" element={<Lab8 />} />
+      <Route path="/lab9" element={<Lab9 />} />
+      <Route path="/lab10" element={<Lab10 />} />
     </Routes>
   )
 }
