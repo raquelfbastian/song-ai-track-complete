@@ -12,10 +12,26 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config();
 const express    = require('express');
 const cors       = require('cors');
+const rateLimit  = require('express-rate-limit');
 const kapeKoRoutes = require('./routes/kapeKo');
 
 const app  = express();
 const PORT = process.env.PORT || 8080;
+const rateLimitWindowMs = Number(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000;
+const apiLimiter = rateLimit({
+  windowMs: rateLimitWindowMs,
+  limit: Number(process.env.RATE_LIMIT_MAX) || 100,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { error: 'Too many requests. Please try again later.' },
+});
+const llmLimiter = rateLimit({
+  windowMs: rateLimitWindowMs,
+  limit: Number(process.env.LLM_RATE_LIMIT_MAX) || 10,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { error: 'Too many AI requests. Please try again later.' },
+});
 
 // ── Middleware ─────────────────────────────────────────────────────────────
 app.use(express.json());
@@ -28,6 +44,16 @@ app.use(cors({
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
+app.use('/api', apiLimiter);
+app.use([
+  '/api/catalog/generate',
+  '/api/catalog/enrich-all',
+  '/api/products/:id/enrich',
+  '/api/chat',
+  '/api/search',
+  '/api/rag',
+  '/api/agent',
+], llmLimiter);
 
 // ── Routes ─────────────────────────────────────────────────────────────────
 app.use('/api', kapeKoRoutes);
