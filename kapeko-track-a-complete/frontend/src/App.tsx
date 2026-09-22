@@ -9,6 +9,12 @@ import { getProducts } from './api/client'
 import ProductDetail from './pages/ProductDetail'
 import Lab3 from './pages/Lab3'
 import Lab4 from './pages/Lab4'
+import Lab5 from './pages/Lab5'
+import Lab6 from './pages/Lab6'
+import Lab7 from './pages/Lab7'
+import Lab8 from './pages/Lab8'
+import Lab9 from './pages/Lab9'
+import Lab10 from './pages/Lab10'
 import SearchBar from './components/SearchBar'
 import ChatWidget from './components/ChatWidget'
 
@@ -52,9 +58,10 @@ function ProductListing() {
             </button>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 20 }}>
-          <Link to="/lab3" style={{ color: '#78716C', fontSize: 13, textDecoration: 'none' }}>Lab 3</Link>
-          <Link to="/lab4" style={{ color: '#78716C', fontSize: 13, textDecoration: 'none' }}>Lab 4</Link>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          {[3, 4, 5, 6, 7, 8, 9, 10].map(lab => (
+            <Link key={lab} to={`/lab${lab}`} style={{ color: '#78716C', fontSize: 12, textDecoration: 'none' }}>Lab {lab}</Link>
+          ))}
         </div>
       </nav>
 
@@ -93,7 +100,7 @@ function ProductListing() {
       {!loading && !error && (
         <div style={{ maxWidth: 760, margin: '0 auto', padding: 24 }}>
           <p style={{ color: '#A8A29E', fontSize: 13, marginBottom: 16 }}>
-            {filtered.length} products · AI-generated via Spring Boot + LLM API
+            {filtered.length} products · AI-generated via Node.js + LLM API
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             {filtered.map(p => {
@@ -134,7 +141,7 @@ function ProductListing() {
 
       {/* Architecture badge */}
       <div style={{ position: 'fixed', bottom: 88, left: '50%', transform: 'translateX(-50%)', background: 'rgba(28,25,23,.9)', backdropFilter: 'blur(8px)', color: '#A8A29E', fontSize: 12, padding: '8px 20px', borderRadius: 20, whiteSpace: 'nowrap', pointerEvents: 'none' }}>
-        <span style={{ color: '#22C55E', fontWeight: 700 }}>● LIVE</span>  Spring Boot :8080 → React :5173 → LLM API
+        <span style={{ color: '#22C55E', fontWeight: 700 }}>● LIVE</span>  Node.js :8080 → React :5173 → LLM API
       </div>
     </div>
   )
@@ -147,6 +154,12 @@ export default function App() {
       <Route path="/products/:id" element={<ProductDetail />} />
       <Route path="/lab3" element={<Lab3 />} />
       <Route path="/lab4" element={<Lab4 />} />
+      <Route path="/lab5" element={<Lab5 />} />
+      <Route path="/lab6" element={<Lab6 />} />
+      <Route path="/lab7" element={<Lab7 />} />
+      <Route path="/lab8" element={<Lab8 />} />
+      <Route path="/lab9" element={<Lab9 />} />
+      <Route path="/lab10" element={<Lab10 />} />
     </Routes>
   )
 }
