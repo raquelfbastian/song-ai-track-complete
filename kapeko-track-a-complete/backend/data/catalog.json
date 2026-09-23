@@ -1,0 +1,126 @@
+{
+  "products": [
+    {
+      "id": "SKU-001",
+      "name": "Benguet Sunrise — Light Roast",
+      "category": "Single Origin Bags",
+      "roast": "Light",
+      "origin": "La Trinidad, Benguet, Cordillera",
+      "farmer": "Jun Carino",
+      "altitude": "1,450-1,600 MASL",
+      "variety": "Typica arabica",
+      "process": "Washed",
+      "price_php": 450,
+      "sub_price_php": 400,
+      "flavor_notes": [
+        "jasmine",
+        "citrus",
+        "honey"
+      ],
+      "best_for": "Calm mornings, reflective mood",
+      "in_stock": true,
+      "subscription_available": true
+    },
+    {
+      "id": "SKU-002",
+      "name": "Sagada Mist — Medium Roast",
+      "category": "Single Origin Bags",
+      "roast": "Medium",
+      "origin": "Sagada, Mountain Province, Cordillera",
+      "farmer": "Berta Lumnay",
+      "altitude": "1,500-1,700 MASL",
+      "variety": "Bourbon",
+      "process": "Natural",
+      "price_php": 500,
+      "sub_price_php": 450,
+      "flavor_notes": [
+        "berry",
+        "milk chocolate",
+        "floral"
+      ],
+      "best_for": "Afternoon brews, creative focus",
+      "in_stock": true,
+      "subscription_available": true
+    },
+    {
+      "id": "SKU-003",
+      "name": "Mt. Apo Dark — Dark Roast",
+      "category": "Single Origin Bags",
+      "roast": "Dark",
+      "origin": "Kidapawan, North Cotabato, Mindanao",
+      "farmer": "Ramon Dalisay",
+      "altitude": "1,200-1,400 MASL",
+      "variety": "Robusta/Arabica",
+      "process": "Honey",
+      "price_php": 550,
+      "sub_price_php": 500,
+      "flavor_notes": [
+        "dark chocolate",
+        "molasses",
+        "spice"
+      ],
+      "best_for": "Evening indulgence, dessert pairing",
+      "in_stock": true,
+      "subscription_available": true
+    },
+    {
+      "id": "SKU-004",
+      "name": "Kape Ko Blend — Medium Roast",
+      "category": "Single Origin Bags",
+      "roast": "Medium",
+      "origin": "Blended from Benguet, Sagada, and Mt. Apo",
+      "farmer": "Various Farmers",
+      "altitude": "1,200-1,700 MASL",
+      "variety": "Arabica and Robusta",
+      "process": "Mixed",
+      "price_php": 480,
+      "sub_price_php": 430,
+      "flavor_notes": [
+        "balanced",
+        "nutty",
+        "caramel"
+      ],
+      "best_for": "All-day drinking, crowd-pleaser",
+      "in_stock": true,
+      "subscription_available": true
+    },
+    {
+      "id": "SKU-005",
+      "name": "Kape Ko Starter Set (3 x 100g Sampler)",
+      "category": "Subscription Bundle",
+      "roast": "Light, Medium, Dark",
+      "origin": "Benguet, Sagada, and Mt. Apo",
+      "farmer": "Various Farmers",
+      "altitude": "1,200-1,700 MASL",
+      "variety": "Arabica and Robusta",
+      "process": "Mixed",
+      "price_php": 600,
+      "sub_price_php": 540,
+      "flavor_notes": [
+        "varied profiles"
+      ],
+      "best_for": "Exploring flavors, gifting",
+      "in_stock": true,
+      "subscription_available": true
+    },
+    {
+      "id": "SKU-006",
+      "name": "Kape Ko Corporate Gift Box",
+      "category": "Gift Set",
+      "roast": "Light, Medium, Dark",
+      "origin": "Benguet, Sagada, and Mt. Apo",
+      "farmer": "Various Farmers",
+      "altitude": "1,200-1,700 MASL",
+      "variety": "Arabica and Robusta",
+      "process": "Mixed",
+      "price_php": 650,
+      "sub_price_php": null,
+      "flavor_notes": [
+        "varied profiles"
+      ],
+      "best_for": "Corporate gifting, special occasions",
+      "in_stock": true,
+      "subscription_available": false
+    }
+  ]
+}
