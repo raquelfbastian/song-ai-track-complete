@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import LabNav from '../components/LabNav'
 import { getCatalog, enrichProduct } from '../api/client'
 import { Product } from '../types/Product'
 
@@ -30,14 +31,7 @@ export default function Lab4() {
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100">
-      <nav className="border-b border-stone-800 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link to="/lab3" className="text-stone-500 text-sm hover:text-stone-300">← Lab 3</Link>
-          <span className="text-stone-700">|</span>
-          <span className="text-amber-500 text-sm font-semibold">Lab 4: Content Studio</span>
-        </div>
-        <Link to="/" className="text-stone-500 text-sm hover:text-amber-400">Storefront →</Link>
-      </nav>
+      <LabNav />
 
       <div className="max-w-3xl mx-auto px-6 py-10">
         <div className="mb-8">

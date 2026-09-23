@@ -4,6 +4,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { LabNavComponent } from '../../components/lab-nav/lab-nav.component';
 import { HttpClient } from '@angular/common/http';
 
 interface PipelineResult {
@@ -23,21 +24,9 @@ interface PipelineResult {
 @Component({
   selector: 'app-lab10',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [LabNavComponent, CommonModule, RouterModule],
   template: `
-    <nav class="nav">
-      <a routerLink="/" class="brand">☕ Kape Ko</a>
-      <div class="links">
-        <a routerLink="/lab3">Lab 3</a>
-        <a routerLink="/lab4">Lab 4</a>
-        <a routerLink="/lab5">Lab 5</a>
-        <a routerLink="/lab6">Lab 6</a>
-        <a routerLink="/lab7">Lab 7</a>
-        <a routerLink="/lab8">Lab 8</a>
-        <a routerLink="/lab9">Lab 9</a>
-        <a routerLink="/lab10" class="active">Lab 10</a>
-      </div>
-    </nav>
+    <app-lab-nav />
     <main class="page">
       <p class="eyebrow">Orchestrated AI workflow</p>
       <h1>Lab 10 - Multi-Agent Catalog Pipeline</h1>
@@ -87,12 +76,6 @@ interface PipelineResult {
   `,
   styles: [`
     :host { display:block; min-height:100vh; background:#FAFAF9; color:#1C1917; }
-    .nav { min-height:56px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; background:#1C1917; }
-    .brand, .links a { color:#fff; text-decoration:none; }
-    .brand { font-size:18px; font-weight:700; }
-    .links { display:flex; gap:16px; flex-wrap:wrap; justify-content:flex-end; }
-    .links a { color:#A8A29E; font-size:13px; }
-    .links a.active, .links a:hover { color:#F59E0B; }
     .page { max-width:980px; margin:0 auto; padding:56px 24px; }
     .eyebrow { color:#D97706; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; }
     h1 { margin:8px 0; font-size:38px; font-weight:700; }

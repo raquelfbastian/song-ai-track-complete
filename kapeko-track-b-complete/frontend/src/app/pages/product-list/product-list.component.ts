@@ -24,14 +24,14 @@ import { Product }                 from '../../models/product.model';
         </button>
       </div>
       <div class="nav-links">
-        <a routerLink="/lab3">Lab 3</a>
-        <a routerLink="/lab4">Lab 4</a>
-        <a routerLink="/lab5">Lab 5</a>
-        <a routerLink="/lab6">Lab 6</a>
-        <a routerLink="/lab7">Lab 7</a>
-        <a routerLink="/lab8">Lab 8</a>
-        <a routerLink="/lab9">Lab 9</a>
-        <a routerLink="/lab10">Lab 10</a>
+        <a routerLink="/lab3" routerLinkActive="active">Lab 3</a>
+        <a routerLink="/lab4" routerLinkActive="active">Lab 4</a>
+        <a routerLink="/lab5" routerLinkActive="active">Lab 5</a>
+        <a routerLink="/lab6" routerLinkActive="active">Lab 6</a>
+        <a routerLink="/lab7" routerLinkActive="active">Lab 7</a>
+        <a routerLink="/lab8" routerLinkActive="active">Lab 8</a>
+        <a routerLink="/lab9" routerLinkActive="active">Lab 9</a>
+        <a routerLink="/lab10" routerLinkActive="active">Lab 10</a>
       </div>
     </nav>
 
@@ -103,7 +103,7 @@ import { Product }                 from '../../models/product.model';
     .filter-btn.active { background:#F59E0B; color:#fff; }
     .nav-links { display:flex; gap:16px; }
     .nav-links a { color:#78716C; text-decoration:none; font-size:13px; }
-    .nav-links a:hover { color:#F59E0B; }
+    .nav-links a.active, .nav-links a:hover { color:#F59E0B; }
     .hero { background:#1C1917; padding:48px 24px; text-align:center; }
     .hero-eyebrow { color:#F59E0B; font-size:11px; font-weight:600; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
     .hero-title { font-size:36px; font-weight:300; color:#fff; margin-bottom:12px; line-height:1.2; }

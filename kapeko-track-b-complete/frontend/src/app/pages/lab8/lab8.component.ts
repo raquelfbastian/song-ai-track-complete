@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { LabNavComponent } from '../../components/lab-nav/lab-nav.component';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 import { RecommendationsComponent } from '../../components/recommendations/recommendations.component';
@@ -12,19 +13,9 @@ import { RecommendationsComponent } from '../../components/recommendations/recom
 @Component({
   selector: 'app-lab8',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, RecommendationsComponent],
+  imports: [LabNavComponent, CommonModule, FormsModule, RouterModule, RecommendationsComponent],
   template: `
-    <nav class="nav">
-      <a routerLink="/" class="brand">☕ Kape Ko</a>
-      <div class="links">
-        <a routerLink="/lab3">Lab 3</a>
-        <a routerLink="/lab4">Lab 4</a>
-        <a routerLink="/lab5">Lab 5</a>
-        <a routerLink="/lab6">Lab 6</a>
-        <a routerLink="/lab7">Lab 7</a>
-        <a routerLink="/lab8" class="active">Lab 8</a>
-      </div>
-    </nav>
+    <app-lab-nav />
     <main class="page">
       <p class="eyebrow">Personalized discovery</p>
       <h1>Lab 8 - Recommendation Engine</h1>
@@ -46,12 +37,6 @@ import { RecommendationsComponent } from '../../components/recommendations/recom
   `,
   styles: [`
     :host { display:block; min-height:100vh; background:#FAFAF9; color:#1C1917; }
-    .nav { height:56px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; background:#1C1917; }
-    .brand, .links a { color:#fff; text-decoration:none; }
-    .brand { font-size:18px; font-weight:700; }
-    .links { display:flex; gap:18px; }
-    .links a { color:#A8A29E; font-size:13px; }
-    .links a.active, .links a:hover { color:#F59E0B; }
     .page { max-width:760px; margin:0 auto; padding:64px 24px; }
     .eyebrow { color:#D97706; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; }
     h1 { margin:8px 0; font-size:38px; font-weight:700; }

@@ -7,9 +7,10 @@ All prompts filled in. All services implemented. Run this to see the end goal.
 
 ### Terminal 1 — Node.js backend
 ```bash
-cd backend
-cp .env.example .env
+cd kapeko-track-a-complete
+cp backend/.env.example .env
 # Edit .env — add your LLM_API_KEY
+cd backend
 npm install
 npm run dev
 ```

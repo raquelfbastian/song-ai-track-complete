@@ -8,7 +8,7 @@ export PATH="/opt/homebrew/opt/openjdk@17/bin:/opt/homebrew/bin:$PATH"
 export JAVA_HOME="${JAVA_HOME:-/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home}"
 
 set -a
-[ -f .env ] && source .env
+[ -f ../.env ] && source ../.env
 set +a
 
 mvn spring-boot:run > backend.log 2>&1 &

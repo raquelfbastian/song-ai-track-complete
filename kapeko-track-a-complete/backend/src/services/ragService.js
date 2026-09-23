@@ -30,6 +30,7 @@ async function indexCatalog(products) {
 
 // Lab 7 Step 2: RETRIEVE — cosine similarity search
 async function retrieve(query, topK = 3) {
+  if (!indexed || vectorStore.size === 0) await indexSavedCatalog();
   if (!indexed || vectorStore.size === 0) {
     throw new Error('Vector store empty. Run POST /api/catalog/generate first.');
   }
@@ -69,6 +70,18 @@ async function search(query) {
     sources: retrieved.map(p => p.id),
     products: retrieved,
   };
+}
+
+// The vector store is in-memory, so it is empty after every server restart.
+// Rebuild it from the saved catalog (data/catalog.json) on first use.
+let autoIndexing = null;
+function indexSavedCatalog() {
+  if (!autoIndexing) {
+    const products = require('./catalogService').loadSavedCatalog();
+    if (!products?.length) return Promise.resolve();
+    autoIndexing = indexCatalog(products).finally(() => { autoIndexing = null; });
+  }
+  return autoIndexing;
 }
 
 async function reindex(products) {

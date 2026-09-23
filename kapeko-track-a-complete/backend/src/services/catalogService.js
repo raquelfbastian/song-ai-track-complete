@@ -51,10 +51,16 @@ async function getCatalog() {
   return JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf-8')).products;
 }
 
+// Saved catalog only — returns null instead of calling the LLM when none exists
+function loadSavedCatalog() {
+  if (!fs.existsSync(CATALOG_PATH)) return null;
+  return JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf-8')).products;
+}
+
 function saveCatalog(products) {
   const dir = path.dirname(CATALOG_PATH);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(CATALOG_PATH, JSON.stringify({ products }, null, 2));
 }
 
-module.exports = { generateCatalog, getCatalog };
+module.exports = { generateCatalog, getCatalog, loadSavedCatalog };

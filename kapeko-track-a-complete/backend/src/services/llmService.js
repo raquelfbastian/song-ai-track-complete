@@ -27,6 +27,13 @@ async function complete(systemPrompt, userPrompt) {
 
 // ── Azure OpenAI ───────────────────────────────────────────────────────────
 async function callAzureOpenAI(system, user) {
+  return callAzureChat([
+    { role: 'system', content: system },
+    { role: 'user',   content: user   },
+  ]);
+}
+
+async function callAzureChat(messages) {
   const endpoint = requireAzureEndpoint();
   const apiKey   = process.env.LLM_API_KEY;
   const isV1Endpoint = endpoint.endsWith('/openai/v1');
@@ -35,10 +42,7 @@ async function callAzureOpenAI(system, user) {
     `${endpoint}/chat/completions${isV1Endpoint ? '' : '?api-version=2024-02-01'}`,
     {
       ...(isV1Endpoint ? { model: process.env.LLM_MODEL || 'gpt-4o' } : {}),
-      messages: [
-        { role: 'system', content: system },
-        { role: 'user',   content: user   },
-      ],
+      messages,
       temperature: 0.7,
     },
     {
@@ -130,24 +134,27 @@ async function completeWithHistory(systemPrompt, history) {
     return callAnthropic(systemPrompt, history);
   }
 
+  if (provider !== 'groq' && provider !== 'openai') {
+    return callAzureChat(messages);
+  }
+
   const body = {
-    model: process.env.LLM_MODEL || 'gpt-4o',
+    model: process.env.LLM_MODEL || (provider === 'groq' ? 'llama-3.1-8b-instant' : 'gpt-4o'),
     temperature: 0.7,
     messages,
   };
 
   const url = provider === 'groq'
     ? 'https://api.groq.com/openai/v1/chat/completions'
-    : provider === 'openai'
-    ? 'https://api.openai.com/v1/chat/completions'
-    : `${process.env.AZURE_OPENAI_ENDPOINT}/chat/completions?api-version=2024-02-01`;
+    : 'https://api.openai.com/v1/chat/completions';
 
-  const headers = provider === 'azure'
-    ? { 'Content-Type': 'application/json', 'api-key': process.env.LLM_API_KEY }
-    : { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.LLM_API_KEY}` };
+  const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.LLM_API_KEY}` };
 
   const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
   const data = await res.json();
+  if (!res.ok || !data.choices) {
+    throw new Error(`LLM API error ${res.status}: ${data.error?.message || JSON.stringify(data)}`);
+  }
   return data.choices[0].message.content;
 }
 
@@ -180,6 +187,9 @@ async function embed(text) {
 
   const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
   const data = await res.json();
+  if (!res.ok || !data.data) {
+    throw new Error(`Embedding API error ${res.status}: ${data.error?.message || JSON.stringify(data)}`);
+  }
   return data.data[0].embedding;
 }
 

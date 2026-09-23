@@ -1,19 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { LabNavComponent } from '../../components/lab-nav/lab-nav.component';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-lab4',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [LabNavComponent, CommonModule, RouterModule],
   template: `
-    <nav style="background:#0C0A09;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between">
-      <a routerLink="/lab3" style="color:#F59E0B;font-size:13px;text-decoration:none">← Lab 3</a>
-      <span style="color:#fff;font-size:14px;font-weight:500">Lab 4 — Content Studio</span>
-      <a routerLink="/" style="color:#F59E0B;font-size:13px;text-decoration:none">Storefront →</a>
-    </nav>
+    <app-lab-nav />
     <div style="max-width:720px;margin:0 auto;padding:32px 24px">
       <p style="color:#F59E0B;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Lab 4</p>
       <h1 style="color:#1C1917;font-size:24px;font-weight:300;margin-bottom:8px">Product Content Studio</h1>
